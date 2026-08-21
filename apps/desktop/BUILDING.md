@@ -26,6 +26,7 @@ From `apps/desktop`:
 
 ```bash
 bun run clean:dev
+bun run generate:icons
 bun run compile:app
 bun run package -- --publish never
 ```

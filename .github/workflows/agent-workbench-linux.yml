@@ -65,7 +65,9 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=8192
           SKIP_ENV_VALIDATION: "1"
           TARGET_ARCH: x64
-        run: bun run compile:app
+        run: |
+          bun run generate:icons
+          bun run compile:app
 
       - name: Package Linux artifacts
         working-directory: apps/desktop
