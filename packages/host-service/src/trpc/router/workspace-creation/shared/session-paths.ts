@@ -5,11 +5,13 @@ import { TRPCError } from "@trpc/server";
 
 /**
  * Managed home for project-less "session" workspace folders. Sibling of
- * `~/.superset/worktrees` — each entry is a standalone git repo owned by
+ * the app's managed `worktrees` directory — each entry is a standalone git repo owned by
  * exactly one session workspace, created and removed by the host.
  */
 export function defaultSessionsRoot(): string {
-	return join(homedir(), ".superset", "sessions");
+	const appHome =
+		process.env.SUPERSET_HOME_DIR?.trim() || join(homedir(), ".superset");
+	return join(appHome, "sessions");
 }
 
 /** Resolve `<sessionsRoot>/<folderName>` with a path-traversal guard. */
