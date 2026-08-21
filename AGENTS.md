@@ -90,6 +90,15 @@ Desktop, host-service, and cli share one version; cut releases on a dedicated br
 `scripts/release/README.md`. A *canary* is a separate thing: `bash scripts/release-canary.sh
 [commit]` builds the rolling internal `desktop-canary` prerelease, not a versioned release.
 
+## Development workflow
+
+`main` is protected. Every meaningful change starts from `main` on a focused branch named with one
+of these prefixes: `feature/*`, `fix/*`, `refactor/*`, or `docs/*`.
+
+The required lifecycle is: branch → cohesive commits → relevant tests → pull request → self-review
+of the complete diff → merge after required checks pass → delete the merged branch. Never push a
+meaningful change directly to `main`.
+
 ## Orchestrating agents and workspaces
 
 When work wants a fresh isolated environment, a parallel agent, or a long-running job, reach for the
