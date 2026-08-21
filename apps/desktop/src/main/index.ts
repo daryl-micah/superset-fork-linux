@@ -71,7 +71,7 @@ void applyShellEnvToProcess().catch((error) => {
 if (IS_DEV) {
 	const workspaceName = resolveDevWorkspaceName();
 	if (workspaceName) {
-		app.setName(`Superset (${workspaceName})`);
+		app.setName(`Agent Workbench (${workspaceName})`);
 	}
 }
 
@@ -106,7 +106,7 @@ async function processDeepLink(url: string): Promise<void> {
 			dialog.showErrorBox(
 				"Sign-in failed",
 				result.error ??
-					"Superset could not complete sign-in. Please try again.",
+					"Agent Workbench could not complete sign-in. Please try again.",
 			);
 		}
 		return;
@@ -115,7 +115,7 @@ async function processDeepLink(url: string): Promise<void> {
 	console.log("[main] Processing deep link:", url);
 
 	// Non-auth deep links: extract path and navigate in renderer
-	// e.g. superset://tasks/my-slug -> /tasks/my-slug
+	// e.g. agent-workbench://tasks/my-slug -> /tasks/my-slug
 	const path = `/${url.split("://")[1]}`;
 	focusMainWindow();
 
@@ -232,7 +232,7 @@ app.on("before-quit", async (event) => {
 				buttons: ["Quit", "Cancel"],
 				defaultId: 0,
 				cancelId: 1,
-				title: "Quit Superset",
+				title: "Quit Agent Workbench",
 				message: "Are you sure you want to quit?",
 			});
 
@@ -372,7 +372,7 @@ if (!gotTheLock) {
 		};
 		protocol.handle("superset-icon", iconProtocolHandler);
 		session
-			.fromPartition("persist:superset")
+			.fromPartition("persist:agent-workbench")
 			.protocol.handle("superset-icon", iconProtocolHandler);
 
 		// Serve system fonts (e.g. SF Mono on macOS) via custom protocol
@@ -401,7 +401,7 @@ if (!gotTheLock) {
 			};
 			protocol.handle("superset-font", fontProtocolHandler);
 			session
-				.fromPartition("persist:superset")
+				.fromPartition("persist:agent-workbench")
 				.protocol.handle("superset-font", fontProtocolHandler);
 		}
 

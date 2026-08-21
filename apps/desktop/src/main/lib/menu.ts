@@ -217,7 +217,7 @@ export function createApplicationMenu() {
 				{ type: "separator" },
 				{ role: "quit" },
 				{
-					label: "Quit Superset Completely",
+					label: "Quit Agent Workbench Completely",
 					click: () => {
 						void confirmAndQuitCompletely();
 					},

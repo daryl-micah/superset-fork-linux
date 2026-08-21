@@ -1,5 +1,5 @@
 import fs from "node:fs";
-import { cp, rm } from "node:fs/promises";
+import { rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { writeFileIfChanged } from "./agent-wrappers-common";
@@ -177,6 +177,25 @@ function listBundledSkills(bundledPluginDir: string): string[] | null {
 	}
 }
 
+async function copyBundledEntry(source: string, target: string): Promise<void> {
+	const sourceStat = fs.statSync(source);
+	if (sourceStat.isDirectory()) {
+		fs.mkdirSync(target, { recursive: true });
+		for (const entry of fs.readdirSync(source)) {
+			await copyBundledEntry(
+				path.join(source, entry),
+				path.join(target, entry),
+			);
+		}
+		return;
+	}
+
+	fs.mkdirSync(path.dirname(target), { recursive: true });
+	await writeFile(target, fs.readFileSync(source), {
+		mode: sourceStat.mode & 0o777,
+	});
+}
+
 /** Copies a bundled skill's extra files (anything besides SKILL.md) verbatim. */
 async function copyBundledExtras(
 	sourceDir: string,
@@ -184,10 +203,9 @@ async function copyBundledExtras(
 ): Promise<void> {
 	for (const entry of fs.readdirSync(sourceDir, { withFileTypes: true })) {
 		if (entry.name === "SKILL.md") continue;
-		await cp(
+		await copyBundledEntry(
 			path.join(sourceDir, entry.name),
 			path.join(targetDir, entry.name),
-			{ recursive: true },
 		);
 	}
 }

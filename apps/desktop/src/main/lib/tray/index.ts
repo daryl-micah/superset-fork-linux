@@ -217,7 +217,7 @@ async function updateTrayMenu(): Promise<void> {
 		},
 		{ type: "separator" },
 		{
-			label: "Open Superset",
+			label: "Open Agent Workbench",
 			click: focusMainWindow,
 		},
 		{
@@ -232,12 +232,12 @@ async function updateTrayMenu(): Promise<void> {
 		},
 		{ type: "separator" },
 		{
-			label: "Close Superset",
+			label: "Close Agent Workbench",
 			click: () => quitApp(),
 		},
 		{ type: "separator" },
 		{
-			label: "Quit Superset Completely",
+			label: "Quit Agent Workbench Completely",
 			click: () => {
 				void confirmAndQuitCompletely();
 			},
@@ -266,7 +266,7 @@ export function initTray(): void {
 		}
 
 		tray = new Tray(icon);
-		tray.setToolTip("Superset");
+		tray.setToolTip("Agent Workbench");
 
 		void updateTrayMenu();
 

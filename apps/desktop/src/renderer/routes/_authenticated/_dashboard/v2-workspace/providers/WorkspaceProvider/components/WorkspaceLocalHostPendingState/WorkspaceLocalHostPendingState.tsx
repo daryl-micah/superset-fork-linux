@@ -23,7 +23,7 @@ const DETAIL_BY_STATUS = {
 	// here — the service is healthy and this clears itself.
 	running: "The local host service just came up. Reconnecting to it now.",
 	unknown:
-		"The local host service isn't responding. Restarting it usually clears this; if it keeps happening, restart Superset.",
+		"The local host service isn't responding. Restarting it usually clears this; if it keeps happening, restart Agent Workbench.",
 } as const;
 
 export function WorkspaceLocalHostPendingState({ hostId }: { hostId: string }) {
@@ -42,7 +42,7 @@ export function WorkspaceLocalHostPendingState({ hostId }: { hostId: string }) {
 	const restart = electronTrpc.hostServiceCoordinator.restart.useMutation({
 		onError: (error) => {
 			toast.error("Couldn't restart the host service", {
-				description: `${error.message} — try the Superset tray menu > Host Service > Restart.`,
+				description: `${error.message} — try the Agent Workbench tray menu > Host Service > Restart.`,
 			});
 		},
 	});

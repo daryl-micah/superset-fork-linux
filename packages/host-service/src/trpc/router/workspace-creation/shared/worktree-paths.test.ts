@@ -2,7 +2,27 @@ import { afterEach, describe, expect, test } from "bun:test";
 import { mkdirSync, mkdtempSync, rmSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { isInsideProjectWorktreesRoot } from "./worktree-paths";
+import {
+	defaultWorktreesRoot,
+	isInsideProjectWorktreesRoot,
+} from "./worktree-paths";
+
+describe("defaultWorktreesRoot", () => {
+	const originalHome = process.env.SUPERSET_HOME_DIR;
+
+	afterEach(() => {
+		if (originalHome === undefined) {
+			delete process.env.SUPERSET_HOME_DIR;
+		} else {
+			process.env.SUPERSET_HOME_DIR = originalHome;
+		}
+	});
+
+	test("uses the app-specific home directory when provided", () => {
+		process.env.SUPERSET_HOME_DIR = "/tmp/agent-workbench-home";
+		expect(defaultWorktreesRoot()).toBe("/tmp/agent-workbench-home/worktrees");
+	});
+});
 
 describe("isInsideProjectWorktreesRoot", () => {
 	const dirs: string[] = [];

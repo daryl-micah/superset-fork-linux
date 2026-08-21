@@ -22,6 +22,7 @@ env:
 jobs:
   deploy-database:
     name: Deploy Database (Neon)
+    if: github.repository == 'superset-sh/superset'
     runs-on: ubuntu-latest
     environment: preview
 
@@ -685,7 +686,7 @@ jobs:
   post-final-comment:
     name: Post Deployment Comment
     runs-on: ubuntu-latest
-    if: always()
+    if: always() && github.repository == 'superset-sh/superset'
     needs: [deploy-database, deploy-api, deploy-web, deploy-marketing, deploy-admin, deploy-docs]
     permissions:
       contents: read

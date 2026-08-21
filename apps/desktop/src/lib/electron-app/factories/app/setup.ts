@@ -69,7 +69,9 @@ if (PLATFORM.IS_MAC) {
 
 PLATFORM.IS_WINDOWS &&
 	app.setAppUserModelId(
-		env.NODE_ENV === "development" ? process.execPath : makeAppId(),
+		env.NODE_ENV === "development"
+			? process.execPath
+			: makeAppId("dev.agentworkbench.desktop"),
 	);
 
 app.commandLine.appendSwitch("force-color-profile", "srgb");

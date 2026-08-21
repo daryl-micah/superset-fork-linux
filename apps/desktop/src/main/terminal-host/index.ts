@@ -8,8 +8,8 @@
  *
  * IPC Protocol:
  * - Uses NDJSON (newline-delimited JSON) over Unix domain socket
- * - Socket: ~/.superset/terminal-host.sock
- * - Auth token: ~/.superset/terminal-host.token
+ * - Socket: $SUPERSET_HOME_DIR/terminal-host.sock
+ * - Auth token: $SUPERSET_HOME_DIR/terminal-host.token
  */
 
 import { randomBytes } from "node:crypto";
@@ -22,9 +22,8 @@ import {
 	writeFileSync,
 } from "node:fs";
 import { createServer, type Server, Socket } from "node:net";
-import { homedir } from "node:os";
 import { join } from "node:path";
-import { SUPERSET_DIR_NAME } from "shared/constants";
+import { resolveTerminalHostHomeDir } from "../lib/terminal-host/resolve-home-dir";
 import {
 	type CancelCreateOrAttachRequest,
 	type ClearScrollbackRequest,
@@ -55,9 +54,9 @@ import { TerminalHost } from "./terminal-host";
 
 const DAEMON_VERSION = "1.0.0";
 
-// SUPERSET_DIR_NAME is imported from shared/constants for multi-worktree support
-// This allows workspace-specific home directories (e.g., ~/.superset-my-feature)
-const SUPERSET_HOME_DIR = join(homedir(), SUPERSET_DIR_NAME);
+// Respect the parent app's explicit home so packaged profiles and smoke tests
+// do not share terminal sockets or tokens.
+const SUPERSET_HOME_DIR = resolveTerminalHostHomeDir();
 
 // Socket and token paths
 const SOCKET_PATH = join(SUPERSET_HOME_DIR, "terminal-host.sock");

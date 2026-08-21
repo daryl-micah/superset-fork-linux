@@ -30,9 +30,10 @@ export function useWorkspaceHostOptions(): UseWorkspaceHostOptionsResult {
 	const { data: session } = authClient.useSession();
 	const { machineId, activeHostUrl } = useLocalHostService();
 
-	const activeOrganizationId = env.SKIP_ENV_VALIDATION
-		? MOCK_ORG_ID
-		: (session?.session?.activeOrganizationId ?? null);
+	const activeOrganizationId =
+		env.LOCAL_MODE || env.SKIP_ENV_VALIDATION
+			? MOCK_ORG_ID
+			: (session?.session?.activeOrganizationId ?? null);
 	const currentUserId = session?.user?.id ?? null;
 
 	const { data: hostRows = [] } = cloudTrpc.v2Host.list.useQuery(undefined, {

@@ -4,7 +4,7 @@ import { type SelectProject, settings } from "@superset/local-db";
 import { localDb } from "main/lib/local-db";
 import { SUPERSET_DIR_NAME, WORKTREES_DIR_NAME } from "shared/constants";
 
-/** Resolves base dir: project override > global setting > default (~/.superset/worktrees) */
+/** Resolves base dir: project override > global setting > default (~/.agent-workbench/worktrees) */
 export function resolveWorktreePath(
 	project: Pick<SelectProject, "name" | "worktreeBaseDir">,
 	branch: string,

@@ -87,14 +87,16 @@ function AuthenticatedLayout() {
 	const shownWorkspaceInitWarningsRef = useRef(new Set<string>());
 	const isV2CloudEnabled = useIsV2CloudEnabled();
 
-	const isSignedIn = env.SKIP_ENV_VALIDATION || !!session?.user;
-	const activeOrganizationId = env.SKIP_ENV_VALIDATION
-		? MOCK_ORG_ID
-		: session?.session?.activeOrganizationId;
+	const isSignedIn =
+		env.LOCAL_MODE || env.SKIP_ENV_VALIDATION || !!session?.user;
+	const activeOrganizationId =
+		env.LOCAL_MODE || env.SKIP_ENV_VALIDATION
+			? MOCK_ORG_ID
+			: session?.session?.activeOrganizationId;
 
 	const isAuthPending =
 		(isPending || (isRefetching && !session?.user && hasLocalToken)) &&
-		!env.SKIP_ENV_VALIDATION;
+		!(env.LOCAL_MODE || env.SKIP_ENV_VALIDATION);
 	const authPendingTimedOut = useDelayElapsed(
 		isAuthPending,
 		SESSION_PENDING_TIMEOUT_MS,
@@ -211,7 +213,7 @@ function AuthenticatedLayout() {
 								Still restoring your session
 							</h2>
 							<p className="text-sm text-muted-foreground">
-								Superset can't confirm your sign-in with the server.
+								Agent Workbench can't confirm your sign-in with the server.
 							</p>
 						</div>
 						<div className="flex gap-2">

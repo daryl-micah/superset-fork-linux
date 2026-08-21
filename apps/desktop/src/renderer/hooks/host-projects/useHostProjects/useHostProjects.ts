@@ -48,9 +48,10 @@ export function useHostProjects(): UseHostProjectsResult {
 	const { activeHostUrl, machineId } = useLocalHostService();
 	const relayUrl = useRelayUrl();
 	const { data: session } = authClient.useSession();
-	const fallbackOrganizationId = env.SKIP_ENV_VALIDATION
-		? MOCK_ORG_ID
-		: (session?.session?.activeOrganizationId ?? null);
+	const fallbackOrganizationId =
+		env.LOCAL_MODE || env.SKIP_ENV_VALIDATION
+			? MOCK_ORG_ID
+			: (session?.session?.activeOrganizationId ?? null);
 
 	const { hosts, settled: knownHostsSettled } = useKnownHosts();
 

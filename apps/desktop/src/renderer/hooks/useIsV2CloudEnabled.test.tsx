@@ -64,12 +64,11 @@ mock.module("renderer/lib/auth-client", () => ({
 const realEnv = await import("renderer/env.renderer");
 mock.module("renderer/env.renderer", () => ({
 	...realEnv,
-	env: { ...realEnv.env, NODE_ENV: "production" },
+	env: { ...realEnv.env, LOCAL_MODE: false, NODE_ENV: "production" },
 }));
 
-const { useIsV1FlipLocked, useIsV2CloudEnabled } = await import(
-	"./useIsV2CloudEnabled"
-);
+const { resolveV2Enabled, useIsV1FlipLocked, useIsV2CloudEnabled } =
+	await import("./useIsV2CloudEnabled");
 const { markV1MigrationComplete } = await import(
 	"renderer/lib/v1-migration/completion"
 );
@@ -91,6 +90,17 @@ function readProbe(orgId: string, optIn: boolean | null) {
 }
 
 describe("useIsV1FlipLocked", () => {
+	test("local mode defaults to the local v2 workspace UI", () => {
+		expect(
+			resolveV2Enabled({
+				optInV2: null,
+				localMode: true,
+				v2Only: false,
+				isDevelopment: false,
+			}),
+		).toBe(true);
+	});
+
 	test("unlocked v1-era user without a migration marker stays on v1", () => {
 		expect(readProbe("org-plain", null)).toEqual({ locked: false, v2: false });
 	});

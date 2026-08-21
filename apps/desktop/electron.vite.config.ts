@@ -65,6 +65,10 @@ export default defineConfig({
 
 		define: {
 			"process.env.NODE_ENV": defineEnv(process.env.NODE_ENV, "production"),
+			"process.env.AGENT_WORKBENCH_LOCAL_MODE": defineEnv(
+				process.env.AGENT_WORKBENCH_LOCAL_MODE,
+				"1",
+			),
 			"process.env.SKIP_ENV_VALIDATION": defineEnv(
 				process.env.SKIP_ENV_VALIDATION,
 				"",
@@ -170,6 +174,10 @@ export default defineConfig({
 
 		define: {
 			"process.env.NODE_ENV": defineEnv(process.env.NODE_ENV, "production"),
+			"process.env.AGENT_WORKBENCH_LOCAL_MODE": defineEnv(
+				process.env.AGENT_WORKBENCH_LOCAL_MODE,
+				"1",
+			),
 			"process.env.SKIP_ENV_VALIDATION": defineEnv(
 				process.env.SKIP_ENV_VALIDATION,
 				"",
@@ -190,6 +198,10 @@ export default defineConfig({
 	renderer: {
 		define: {
 			"process.env.NODE_ENV": defineEnv(process.env.NODE_ENV),
+			"process.env.AGENT_WORKBENCH_LOCAL_MODE": defineEnv(
+				process.env.AGENT_WORKBENCH_LOCAL_MODE,
+				"1",
+			),
 			"process.env.SKIP_ENV_VALIDATION": defineEnv(
 				process.env.SKIP_ENV_VALIDATION,
 				"",
