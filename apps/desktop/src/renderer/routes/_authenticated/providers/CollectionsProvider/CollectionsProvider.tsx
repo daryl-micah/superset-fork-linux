@@ -58,9 +58,10 @@ export function preloadActiveOrganizationCollections(
 export function CollectionsProvider({ children }: { children: ReactNode }) {
 	const { data: session, refetch: refetchSession } = authClient.useSession();
 	const [isSwitching, setIsSwitching] = useState(false);
-	const activeOrganizationId = env.SKIP_ENV_VALIDATION
-		? MOCK_ORG_ID
-		: session?.session?.activeOrganizationId;
+	const activeOrganizationId =
+		env.LOCAL_MODE || env.SKIP_ENV_VALIDATION
+			? MOCK_ORG_ID
+			: session?.session?.activeOrganizationId;
 
 	const switchOrganization = useCallback(
 		async (organizationId: string) => {

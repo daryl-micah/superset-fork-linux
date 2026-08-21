@@ -49,10 +49,19 @@ const rawEnv = {
 // Only allow skipping validation in development (never in production)
 const SKIP_ENV_VALIDATION =
 	process.env.NODE_ENV === "development" && !!process.env.SKIP_ENV_VALIDATION;
+// Agent Workbench defaults to a production-capable local mode. Set the build
+// variable to "0" to produce a cloud-authenticated compatibility build.
+export function isAgentWorkbenchLocalMode(value: string | undefined): boolean {
+	return value !== "0";
+}
+const LOCAL_MODE = isAgentWorkbenchLocalMode(
+	process.env.AGENT_WORKBENCH_LOCAL_MODE,
+);
 
 export const env = {
 	...(SKIP_ENV_VALIDATION
 		? (rawEnv as z.infer<typeof envSchema>)
 		: envSchema.parse(rawEnv)),
 	SKIP_ENV_VALIDATION,
+	LOCAL_MODE,
 };

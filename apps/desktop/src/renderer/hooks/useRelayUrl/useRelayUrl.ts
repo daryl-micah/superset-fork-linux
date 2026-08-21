@@ -12,6 +12,7 @@ import { apiTrpcClient } from "renderer/lib/api-trpc-client";
 export function useRelayUrl(): string {
 	const { data } = useQuery({
 		queryKey: ["relay-endpoint"],
+		enabled: !env.LOCAL_MODE,
 		queryFn: () => apiTrpcClient.host.relayEndpoint.query(),
 		staleTime: 5 * 60 * 1000,
 		retry: 3,

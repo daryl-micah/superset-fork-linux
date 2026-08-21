@@ -4,6 +4,7 @@ import {
 } from "@superset/shared/host-routing";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
+import { env } from "renderer/env.renderer";
 import { useRelayUrl } from "renderer/hooks/useRelayUrl";
 import { getJwt } from "renderer/lib/auth-client";
 
@@ -52,6 +53,7 @@ export function useHostsPresence(
 
 	const { data: relayIsProto2 } = useQuery({
 		queryKey: ["relay-proto", relayUrl],
+		enabled: !env.LOCAL_MODE && routingKeys.length > 0,
 		staleTime: Number.POSITIVE_INFINITY,
 		retry: 1,
 		queryFn: async () => {

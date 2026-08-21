@@ -57,6 +57,7 @@ export function useDesktopNotices(): UseDesktopNoticesResult {
 	// Fails open: any fetch/parse error just means no notices this cycle.
 	const { data } = useQuery({
 		queryKey: ["desktop-notices"],
+		enabled: !env.LOCAL_MODE,
 		queryFn: async () => {
 			const response = await fetch(
 				`${env.NEXT_PUBLIC_API_URL}/api/desktop/version`,

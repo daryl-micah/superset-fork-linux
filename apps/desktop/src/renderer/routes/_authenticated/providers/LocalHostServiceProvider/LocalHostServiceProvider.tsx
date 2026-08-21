@@ -56,12 +56,14 @@ export function LocalHostServiceProvider({
 			},
 		});
 
-	const activeOrganizationId = env.SKIP_ENV_VALIDATION
-		? MOCK_ORG_ID
-		: (session?.session?.activeOrganizationId ?? null);
-	const organizationIds = env.SKIP_ENV_VALIDATION
-		? MOCK_ORGANIZATION_IDS
-		: session?.session?.organizationIds;
+	const activeOrganizationId =
+		env.LOCAL_MODE || env.SKIP_ENV_VALIDATION
+			? MOCK_ORG_ID
+			: (session?.session?.activeOrganizationId ?? null);
+	const organizationIds =
+		env.LOCAL_MODE || env.SKIP_ENV_VALIDATION
+			? MOCK_ORGANIZATION_IDS
+			: session?.session?.organizationIds;
 	const sessionToken = session?.session?.token ?? null;
 	const organizationIdsJson = organizationIds
 		? JSON.stringify([...new Set(organizationIds)].sort())
@@ -88,7 +90,8 @@ export function LocalHostServiceProvider({
 			!authToken ||
 			!membershipVersion ||
 			lastPersistedMembershipRef.current === membershipVersion ||
-			(!env.SKIP_ENV_VALIDATION && sessionToken !== authToken)
+			(!(env.LOCAL_MODE || env.SKIP_ENV_VALIDATION) &&
+				sessionToken !== authToken)
 		) {
 			return;
 		}

@@ -9,6 +9,7 @@ import {
 import { createAuthClient } from "better-auth/react";
 import { useSyncExternalStore } from "react";
 import { env } from "renderer/env.renderer";
+import { createAuthFetch } from "renderer/lib/auth-fetch";
 import { decodeJwtExpiresAtMs } from "renderer/lib/jwt-expiry";
 
 let authToken: string | null = null;
@@ -132,6 +133,7 @@ export const authClient = createAuthClient({
 	],
 	fetchOptions: {
 		credentials: "include",
+		customFetchImpl: createAuthFetch(env.LOCAL_MODE),
 		onRequest: async (context) => {
 			const token = getAuthToken();
 			if (token) {

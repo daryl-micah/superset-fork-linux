@@ -55,7 +55,7 @@ function SignInPage() {
 	);
 
 	// Dev bypass: skip sign-in entirely
-	if (env.SKIP_ENV_VALIDATION) {
+	if (env.LOCAL_MODE || env.SKIP_ENV_VALIDATION) {
 		return workspaceRedirect;
 	}
 
@@ -160,7 +160,7 @@ function SignInPage() {
 
 					<div className="text-center mb-8">
 						<h1 className="text-xl font-semibold text-foreground mb-2">
-							Welcome to Superset
+							Welcome to Agent Workbench
 						</h1>
 						<p className="text-sm text-muted-foreground">
 							{hasLocalToken

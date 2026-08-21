@@ -38,9 +38,10 @@ export function useKnownHosts(): {
 	settled: boolean;
 } {
 	const { data: session } = authClient.useSession();
-	const organizationId = env.SKIP_ENV_VALIDATION
-		? MOCK_ORG_ID
-		: (session?.session?.activeOrganizationId ?? null);
+	const organizationId =
+		env.LOCAL_MODE || env.SKIP_ENV_VALIDATION
+			? MOCK_ORG_ID
+			: (session?.session?.activeOrganizationId ?? null);
 
 	// Presence drives the fan-out targets the sidebar polls while the window is
 	// backgrounded, so this refresh has to keep running there too.

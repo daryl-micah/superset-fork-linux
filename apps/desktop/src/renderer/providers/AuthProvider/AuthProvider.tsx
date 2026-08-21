@@ -1,4 +1,5 @@
 import { type ReactNode, useEffect, useState } from "react";
+import { env } from "renderer/env.renderer";
 import {
 	authClient,
 	getAuthToken,
@@ -22,6 +23,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 	useEffect(() => {
 		if (!isSuccess || isHydrated) return;
+		if (env.LOCAL_MODE) {
+			setAuthToken(null);
+			setJwt(null);
+			setIsHydrated(true);
+			return;
+		}
 
 		let cancelled = false;
 
@@ -74,6 +81,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 	electronTrpc.auth.onTokenChanged.useSubscription(undefined, {
 		onData: async (data) => {
+			if (env.LOCAL_MODE) {
+				setAuthToken(null);
+				setJwt(null);
+				setIsHydrated(true);
+				return;
+			}
 			if (data?.token && data?.expiresAt) {
 				// Swap atomically: a null-token + awaited sign-out gap let a
 				// concurrent get-session read "no session" and unmount the whole
@@ -105,7 +118,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	});
 
 	useEffect(() => {
-		if (!isHydrated) return;
+		if (!isHydrated || env.LOCAL_MODE) return;
 
 		const refreshJwt = () =>
 			authClient
