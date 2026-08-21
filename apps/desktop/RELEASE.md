@@ -1,5 +1,12 @@
 # Desktop App Release Process
 
+> **Agent Workbench fork:** use the Linux workflow in
+> `.github/workflows/agent-workbench-linux.yml`. Push an
+> `agent-workbench-v<version>` tag to build `.deb` and AppImage artifacts and
+> create a draft release in `daryl-micah/superset-fork-linux`. The upstream
+> `desktop-v*` flow documented below is retained for synchronization and must
+> not be used for downstream releases.
+
 ## Quick Start
 
 From the monorepo root, use the unified entry point:
@@ -112,6 +119,7 @@ Output: `apps/desktop/release/`
 
 Linux output should include:
 
+- `*.deb`
 - `*.AppImage`
 - `*-linux.yml` (auto-update manifest)
 
