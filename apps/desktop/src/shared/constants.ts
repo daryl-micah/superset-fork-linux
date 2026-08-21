@@ -1,4 +1,3 @@
-import { PROTOCOL_SCHEMES } from "@superset/shared/constants";
 import { getWorkspaceName } from "./env.shared";
 
 export const PLATFORM = {
@@ -9,11 +8,11 @@ export const PLATFORM = {
 
 const workspace = getWorkspaceName();
 export const SUPERSET_DIR_NAME = workspace
-	? `.superset-${workspace}`
-	: ".superset";
+	? `.agent-workbench-${workspace}`
+	: ".agent-workbench";
 export const PROTOCOL_SCHEME = workspace
-	? `superset-${workspace}`
-	: PROTOCOL_SCHEMES.PROD;
+	? `agent-workbench-${workspace}`
+	: "agent-workbench";
 // Project-level directory name (always .superset, not conditional)
 export const PROJECT_SUPERSET_DIR_NAME = ".superset";
 export const WORKTREES_DIR_NAME = "worktrees";
@@ -62,7 +61,7 @@ export const DEFAULT_AUTO_APPLY_DEFAULT_PRESET = true;
 export const DEFAULT_WAIT_FOR_SETUP_BEFORE_AGENT = false;
 export const DEFAULT_SHOW_PRESETS_BAR = true;
 export const DEFAULT_USE_COMPACT_TERMINAL_ADD_BUTTON = true;
-export const DEFAULT_TELEMETRY_ENABLED = true;
+export const DEFAULT_TELEMETRY_ENABLED = false;
 export const DEFAULT_SHOW_RESOURCE_MONITOR = true;
 export const DEFAULT_OPEN_LINKS_IN_APP = false;
 export const DEFAULT_EXPOSE_HOST_SERVICE_VIA_RELAY = false;

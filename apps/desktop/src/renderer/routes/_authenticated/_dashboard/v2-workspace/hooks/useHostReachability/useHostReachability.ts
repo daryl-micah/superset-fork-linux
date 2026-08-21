@@ -37,7 +37,7 @@ function describeFailure(
 	isRelayHost: boolean,
 ): string {
 	if (!isRelayHost) {
-		return "The local host service stopped answering. Retry first; if that doesn't take, restart it from the Superset tray menu > Host Service > Restart.";
+		return "The local host service stopped answering. Retry first; if that doesn't take, restart it from the Agent Workbench tray menu > Host Service > Restart.";
 	}
 	const probe = status.probe;
 	// No probe result at all: the relay itself never answered.
@@ -45,7 +45,7 @@ function describeFailure(
 		return "Couldn't reach the relay service. Check this machine's network connection — the other device is probably fine.";
 	}
 	if (probe.status === 503) {
-		return "That device isn't connected to the relay. Check it's awake, online, and running Superset — it reconnects on its own once it is.";
+		return "That device isn't connected to the relay. Check it's awake, online, and running Agent Workbench — it reconnects on its own once it is.";
 	}
 	if (probe.status === 401 || probe.status === 403) {
 		return "You don't have access to this host. If it's your own device, turn on relay access there under Settings > Security.";
@@ -55,9 +55,9 @@ function describeFailure(
 	}
 	if (probe.status === 200) {
 		const where = probe.region ? ` (region ${probe.region})` : "";
-		return `That device is online${where} but the connection couldn't be established — usually relay routing rather than the device itself. Retry, and if it persists restart Superset on that device.`;
+		return `That device is online${where} but the connection couldn't be established — usually relay routing rather than the device itself. Retry, and if it persists restart Agent Workbench on that device.`;
 	}
-	return `The connection failed (relay status ${probe.status}). Retry, and if it persists restart Superset on that device.`;
+	return `The connection failed (relay status ${probe.status}). Retry, and if it persists restart Agent Workbench on that device.`;
 }
 
 /**

@@ -244,7 +244,7 @@ class BrowserRuntimeRegistryImpl {
 		workspaceId: string,
 	): RegistryEntry {
 		const webview = document.createElement("webview") as Electron.WebviewTag;
-		webview.setAttribute("partition", "persist:superset");
+		webview.setAttribute("partition", "persist:agent-workbench");
 		webview.setAttribute("allowpopups", "");
 		webview.style.position = "fixed";
 		webview.style.top = "0";

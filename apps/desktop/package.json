@@ -1,17 +1,17 @@
 {
 	"name": "@superset/desktop",
-	"productName": "Superset",
-	"description": "The last developer tool you'll ever need",
+	"productName": "Agent Workbench",
+	"description": "A local-first Linux workbench for coding agents",
 	"version": "1.24.1",
+	"license": "Elastic-2.0",
 	"main": "./dist/main/index.js",
 	"resources": "src/resources",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/superset-sh/superset.git"
+		"url": "https://github.com/daryl-micah/superset-fork-linux.git"
 	},
 	"author": {
-		"name": "Superset",
-		"email": "hi@superset.sh"
+		"name": "Agent Workbench Contributors"
 	},
 	"scripts": {
 		"clean": "git clean -xdf .cache .turbo dist dist-electron release node_modules",

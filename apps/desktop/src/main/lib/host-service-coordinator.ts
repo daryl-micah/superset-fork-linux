@@ -1150,9 +1150,9 @@ export class HostServiceCoordinator extends EventEmitter {
 		void dialog.showMessageBox({
 			type: "error",
 			title: "Host service crashed",
-			message: `The Superset host service${orgName ? ` for ${orgName}` : ""} stopped unexpectedly (${cause}) and could not be restarted automatically.`,
+			message: `The Agent Workbench host service${orgName ? ` for ${orgName}` : ""} stopped unexpectedly (${cause}) and could not be restarted automatically.`,
 			detail:
-				"Its workspaces and terminals are unavailable until it restarts — use the Superset tray menu > Host Service > Restart.",
+				"Its workspaces and terminals are unavailable until it restarts — use the Agent Workbench tray menu > Host Service > Restart.",
 		});
 	}
 

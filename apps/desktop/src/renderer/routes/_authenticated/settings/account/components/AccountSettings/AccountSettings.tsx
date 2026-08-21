@@ -186,7 +186,7 @@ export function AccountSettings({ visibleItems }: AccountSettingsProps) {
 					<div className={showProfile ? "pt-5" : undefined}>
 						<SettingRow
 							label="Sign out of this device"
-							hint="You'll need to sign in again to use Superset on this device."
+							hint="You'll need to sign in again to use Agent Workbench on this device."
 						>
 							<Button
 								variant="outline"

@@ -21,9 +21,9 @@ export function SupersetLogo({
 			fill="none"
 			xmlns="http://www.w3.org/2000/svg"
 			className={cn("text-foreground", className)}
-			aria-label="Superset"
+			aria-label="Agent Workbench"
 		>
-			<title>Superset</title>
+			<title>Agent Workbench</title>
 			{gradient && (
 				<defs>
 					<linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
