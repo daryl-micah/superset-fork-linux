@@ -22,6 +22,7 @@ jobs:
       electron_builder_config: electron-builder.ts
       artifact_prefix: desktop
       artifact_retention_days: 30
+      build_macos: false
     secrets: inherit
 
   release:
@@ -43,7 +44,7 @@ jobs:
           # Get all desktop tags sorted by version, find the one before current
           PREVIOUS_TAG=$(git tag -l 'desktop-v*' | sort -V | grep -B1 "^${CURRENT_TAG}$" | head -1)
           if [ "$PREVIOUS_TAG" = "$CURRENT_TAG" ] || [ -z "$PREVIOUS_TAG" ]; then
-            # Current tag is the first or no previous found, get the oldest desktop tag
+            # Current tag is the first or no previous desktop tag exists.
             PREVIOUS_TAG=""
           fi
           echo "current_tag=${CURRENT_TAG}" >> $GITHUB_OUTPUT
@@ -93,10 +94,17 @@ jobs:
           done
           for file in *.AppImage; do
             if [[ -f "$file" ]]; then
-              # Extract architecture from filename (e.g., superset-0.0.1-x64.AppImage -> x64)
+              # Extract architecture from filename (e.g., agent-workbench-0.0.1-x64.AppImage -> x64)
               arch=$(echo "$file" | sed -E 's/.*-([^-]+)\.AppImage$/\1/')
-              cp "$file" "Superset-${arch}.AppImage"
-              echo "Created stable copy: Superset-${arch}.AppImage"
+              cp "$file" "Agent-Workbench-${arch}.AppImage"
+              echo "Created stable copy: Agent-Workbench-${arch}.AppImage"
+            fi
+          done
+          for file in *.deb; do
+            if [[ -f "$file" ]]; then
+              arch=$(echo "$file" | sed -E 's/.*-([^-]+)\.deb$/\1/')
+              cp "$file" "Agent-Workbench-${arch}.deb"
+              echo "Created stable copy: Agent-Workbench-${arch}.deb"
             fi
           done
           # Keep Linux updater manifest at a stable filename for generic provider lookups.
@@ -141,6 +149,6 @@ jobs:
         run: |
           gh release create "${{ github.ref_name }}" \
             release-artifacts/* \
-            --title "Superset Desktop ${{ github.ref_name }}" \
+            --title "Agent Workbench ${{ github.ref_name }}" \
             --notes-file release_notes.md \
             --draft
