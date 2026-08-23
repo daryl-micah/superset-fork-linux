@@ -22,6 +22,6 @@ Generic fixes should be proposed to
 downstream repository is
 [`daryl-micah/superset-fork-linux`](https://github.com/daryl-micah/superset-fork-linux).
 
-Downstream releases use `agent-workbench-v<version>` tags and the dedicated
-`.github/workflows/agent-workbench-linux.yml` workflow. Do not use the upstream
-`desktop-v*` release automation for Agent Workbench artifacts.
+Downstream releases reuse the existing `desktop-v<version>` tags and
+`.github/workflows/release-desktop.yml` pipeline, configured to publish the
+Linux `.deb`, AppImage, and updater manifest from this repository.

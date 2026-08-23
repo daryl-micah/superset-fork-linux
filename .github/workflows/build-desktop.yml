@@ -27,10 +27,16 @@ on:
         required: false
         type: number
         default: 30
+      build_macos:
+        description: "Whether to build macOS artifacts"
+        required: false
+        type: boolean
+        default: true
 
 jobs:
   build-macos:
     name: Build - macOS (${{ matrix.arch }})
+    if: inputs.build_macos
     runs-on: macos-latest
     environment: production
 
@@ -259,10 +265,14 @@ jobs:
         working-directory: apps/desktop
         run: bun run package -- --publish never --config ${{ inputs.electron_builder_config }}
 
-      - name: Verify Linux AppImage + update manifest exist
+      - name: Verify Linux packages + update manifest exist
         working-directory: apps/desktop
         run: |
           ls -la release
+          test -n "$(ls -1 release/*.deb 2>/dev/null)" || {
+            echo "::error::No Debian package generated in apps/desktop/release"
+            exit 1
+          }
           test -n "$(ls -1 release/*.AppImage 2>/dev/null)" || {
             echo "::error::No AppImage artifact generated in apps/desktop/release"
             exit 1
@@ -277,6 +287,20 @@ jobs:
             exit 1
           fi
           "$CLI_BIN" --version
+          DEB_PATH=$(find release -maxdepth 1 -name '*.deb' -print -quit)
+          test "$(dpkg-deb --field "$DEB_PATH" License)" = "Elastic-2.0"
+          dpkg-deb --contents "$DEB_PATH" >/dev/null
+          test "$(stat -c '%a' release/linux-unpacked/chrome-sandbox)" = "4755"
+          test -f release/linux-unpacked/resources/LICENSE.md
+          test -f release/linux-unpacked/resources/MODIFICATIONS.md
+
+      - name: Upload Debian package
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: ${{ inputs.artifact_prefix }}-linux-deb
+          path: apps/desktop/release/*.deb
+          retention-days: ${{ inputs.artifact_retention_days }}
+          if-no-files-found: error
 
       - name: Upload AppImage artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
