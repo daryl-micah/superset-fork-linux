@@ -274,6 +274,19 @@ describe("env", () => {
 				expect(result.SSH_AGENT_PID).toBe("12345");
 			});
 
+			it("should include Linux display authentication variables", () => {
+				const env = {
+					DISPLAY: ":0",
+					WAYLAND_DISPLAY: "wayland-0",
+					XAUTHORITY: "/home/user/.Xauthority",
+					PATH: "/usr/bin",
+				};
+				const result = buildSafeEnv(env, { platform: "linux" });
+				expect(result.DISPLAY).toBe(":0");
+				expect(result.WAYLAND_DISPLAY).toBe("wayland-0");
+				expect(result.XAUTHORITY).toBe("/home/user/.Xauthority");
+			});
+
 			it("should include language manager vars (NVM, PYENV, etc.)", () => {
 				const env = {
 					NVM_DIR: "/Users/test/.nvm",

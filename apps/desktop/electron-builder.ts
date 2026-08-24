@@ -59,6 +59,12 @@ const config: Configuration = {
 	// Generate update manifests for all channels (latest.yml, canary.yml, etc.)
 	// This enables proper channel-based auto-updates following electron-builder conventions
 	generateUpdatesFilesForAllChannels: true,
+	// Use the static AppImage runtime so portable builds do not depend on FUSE 2.
+	// It also probes user namespace support before applying the narrow
+	// --no-sandbox fallback required by some Ubuntu AppArmor configurations.
+	toolsets: {
+		appimage: "1.0.3",
+	},
 
 	// Generate latest-mac.yml for auto-update (workflow handles actual upload)
 	publish: {
@@ -190,11 +196,13 @@ const config: Configuration = {
 		maintainer:
 			"Agent Workbench Contributors <daryl-micah@users.noreply.github.com>",
 		synopsis: pkg.description,
+		syncDesktopName: true,
 		target: ["deb", "AppImage"],
 		artifactName: `agent-workbench-\${version}-\${arch}.\${ext}`,
 	},
 	deb: {
 		packageCategory: "utils",
+		appArmorProfile: join(pkg.resources, "build/apparmor-profile"),
 	},
 
 	// Windows

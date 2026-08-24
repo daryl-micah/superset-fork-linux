@@ -1,6 +1,7 @@
 {
 	"name": "@superset/desktop",
 	"productName": "Agent Workbench",
+	"desktopName": "agent-workbench",
 	"description": "A local-first Linux workbench for coding agents",
 	"version": "1.24.1",
 	"license": "Elastic-2.0",
@@ -268,7 +269,7 @@
 		"code-inspector-plugin": "1.4.5",
 		"cross-env": "10.1.0",
 		"electron": "41.10.3",
-		"electron-builder": "26.8.1",
+		"electron-builder": "26.15.3",
 		"electron-vite": "4.0.1",
 		"material-icon-theme": "5.32.0",
 		"rimraf": "6.1.3",

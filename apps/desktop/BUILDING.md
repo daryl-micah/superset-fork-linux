@@ -59,7 +59,13 @@ The native package is the primary Ubuntu/Debian artifact because it integrates
 with the system package database and avoids relying on an AppImage mount for the
 Chromium sandbox. Never make `--no-sandbox` the default Linux launch behavior.
 
-The AppImage runtime requires the FUSE 2 compatibility library. On current
-Ubuntu releases, install it with `sudo apt-get install libfuse2t64` if launching
-the AppImage reports that `libfuse.so.2` is missing. Older Debian/Ubuntu releases
-may provide the same library as `libfuse2`.
+The AppImage uses electron-builder's static runtime and does not require FUSE 2.
+That runtime probes user namespace support and applies its sandbox fallback only
+when the host cannot provide Chromium namespaces; never add a global
+`--no-sandbox` switch to the application.
+
+To run the same packaged renderer readiness check used by CI:
+
+```bash
+xvfb-run -a ./release/*.AppImage --smoke-test
+```
