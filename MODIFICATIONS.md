@@ -11,6 +11,10 @@ The initial downstream changes are intentionally narrow:
 - account-free local mode by default, with telemetry disabled by default;
 - Linux-first build verification and documentation.
 
+Linux releases recommend the native `.deb` on Ubuntu and Debian, while keeping
+the shared AppImage as the portable option. The AppImage uses the static runtime
+to avoid FUSE 2, and CI launches both formats on Ubuntu 24.04 and Debian 13.
+
 The original copyright and Elastic License 2.0 notices remain in place. Modified
 copies must continue to include `LICENSE.md` and this notice. This project must
 not be offered as a hosted or managed service that exposes a substantial set of

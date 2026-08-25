@@ -56,7 +56,7 @@ const IS_AUTO_UPDATE_PLATFORM = PLATFORM.IS_MAC || PLATFORM.IS_LINUX;
 // Use explicit feed URLs to ensure we always fetch platform-specific manifests
 // (for example latest-mac.yml and latest-linux.yml) from the correct release.
 // - Stable: fetches from /releases/latest/download/ (latest non-prerelease)
-// - Canary: fetches from /releases/download/desktop-canary/ (rolling canary tag)
+// - Canary: fetches from /releases/download/agent-workbench-canary/ (rolling canary tag)
 const UPDATE_FEED_URL = IS_PRERELEASE
 	? "https://github.com/daryl-micah/superset-fork-linux/releases/download/agent-workbench-canary"
 	: "https://github.com/daryl-micah/superset-fork-linux/releases/latest/download";

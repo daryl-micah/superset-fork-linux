@@ -213,7 +213,7 @@ jobs:
         run: bun install --frozen --ignore-scripts
 
       - name: Install Linux native build deps
-        run: sudo apt-get update && sudo apt-get install -y libx11-dev libxkbfile-dev
+        run: sudo apt-get update && sudo apt-get install -y libx11-dev libxkbfile-dev xvfb
 
       - name: Install desktop native dependencies
         working-directory: apps/desktop
@@ -293,6 +293,43 @@ jobs:
           test "$(stat -c '%a' release/linux-unpacked/chrome-sandbox)" = "4755"
           test -f release/linux-unpacked/resources/LICENSE.md
           test -f release/linux-unpacked/resources/MODIFICATIONS.md
+          dpkg-deb --contents "$DEB_PATH" | grep -F './opt/agent-workbench/agent-workbench'
+          dpkg-deb --contents "$DEB_PATH" | grep -F './opt/agent-workbench/resources/apparmor-profile'
+          dpkg-deb --field "$DEB_PATH" Depends | grep -F 'libasound2'
+
+      - name: Smoke-test AppImage on Ubuntu
+        working-directory: apps/desktop
+        run: |
+          APPIMAGE_PATH=$(find release -maxdepth 1 -name '*.AppImage' -print -quit)
+          SMOKE_HOME=$(mktemp -d)
+          HOME="$SMOKE_HOME" xvfb-run -a "$APPIMAGE_PATH" --smoke-test 2>&1 | tee /tmp/appimage-smoke.log
+          grep -F '[linux-smoke-test] renderer ready' /tmp/appimage-smoke.log
+
+      - name: Smoke-test Debian package on Ubuntu
+        working-directory: apps/desktop
+        run: |
+          DEB_PATH=$(realpath "$(find release -maxdepth 1 -name '*.deb' -print -quit)")
+          sudo apt-get install -y "$DEB_PATH"
+          SMOKE_HOME=$(mktemp -d)
+          HOME="$SMOKE_HOME" xvfb-run -a agent-workbench --smoke-test 2>&1 | tee /tmp/deb-smoke.log
+          grep -F '[linux-smoke-test] renderer ready' /tmp/deb-smoke.log
+
+      - name: Smoke-test packages on Debian 13
+        working-directory: apps/desktop
+        run: |
+          docker run --rm \
+            --security-opt seccomp=unconfined \
+            --volume "$PWD/release:/release:ro" \
+            debian:13-slim \
+            bash -euxo pipefail -c '
+              apt-get update
+              apt-get install -y /release/*.deb xvfb
+              useradd --create-home smoke
+              runuser -u smoke -- xvfb-run -a agent-workbench --smoke-test 2>&1 | tee /tmp/deb-smoke.log
+              grep -F "[linux-smoke-test] renderer ready" /tmp/deb-smoke.log
+              runuser -u smoke -- xvfb-run -a /release/*.AppImage --appimage-extract-and-run --smoke-test 2>&1 | tee /tmp/appimage-smoke.log
+              grep -F "[linux-smoke-test] renderer ready" /tmp/appimage-smoke.log
+            '
 
       - name: Upload Debian package
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

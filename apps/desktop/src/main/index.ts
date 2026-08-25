@@ -46,6 +46,7 @@ import {
 } from "./lib/persistence/persistence";
 import { syncInstalledPluginMcpServers } from "./lib/plugin-installs";
 import { ensureProjectIconsDir, getProjectIconPath } from "./lib/project-icons";
+import { shouldRegisterProtocolClient } from "./lib/protocol-registration";
 import { runQuitCleanup } from "./lib/quit-sequence";
 import { initSentry } from "./lib/sentry";
 import {
@@ -76,7 +77,11 @@ if (IS_DEV) {
 }
 
 // Dev mode: register with execPath + app script so macOS launches Electron with our entry point
-if (process.defaultApp) {
+if (!shouldRegisterProtocolClient()) {
+	console.log(
+		"[main] Portable AppImage detected; skipping xdg protocol registration",
+	);
+} else if (process.defaultApp) {
 	if (process.argv.length >= 2) {
 		app.setAsDefaultProtocolClient(PROTOCOL_SCHEME, process.execPath, [
 			path.resolve(process.argv[1]),
@@ -509,7 +514,34 @@ if (!gotTheLock) {
 			});
 		}
 
-		await makeAppSetup(() => MainWindow());
+		const mainWindow = await makeAppSetup(() => MainWindow());
+		if (process.argv.includes("--smoke-test")) {
+			const finishSmokeTest = (exitCode: number, message: string) => {
+				console.log(`[linux-smoke-test] ${message}`);
+				app.exit(exitCode);
+			};
+			const timeout = setTimeout(
+				() => finishSmokeTest(1, "renderer load timed out"),
+				30_000,
+			);
+			if (mainWindow.webContents.isLoadingMainFrame()) {
+				mainWindow.webContents.once("did-finish-load", () => {
+					clearTimeout(timeout);
+					finishSmokeTest(0, "renderer ready");
+				});
+				mainWindow.webContents.once(
+					"did-fail-load",
+					(_event, code, description) => {
+						clearTimeout(timeout);
+						finishSmokeTest(1, `renderer failed: ${code} ${description}`);
+					},
+				);
+			} else {
+				clearTimeout(timeout);
+				finishSmokeTest(0, "renderer ready");
+			}
+			return;
+		}
 		setupAutoUpdater();
 		initTray();
 

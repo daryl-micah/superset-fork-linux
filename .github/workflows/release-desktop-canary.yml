@@ -53,7 +53,7 @@ jobs:
             echo "should_build=true" >> $GITHUB_OUTPUT
           else
             # Get the commit SHA of the last canary release
-            LAST_CANARY_SHA=$(git rev-parse desktop-canary 2>/dev/null || echo "")
+            LAST_CANARY_SHA=$(git rev-parse agent-workbench-canary 2>/dev/null || echo "")
 
             if [ -z "$LAST_CANARY_SHA" ]; then
               echo "No previous canary release found, building..."
@@ -77,6 +77,7 @@ jobs:
       electron_builder_config: electron-builder.canary.ts
       artifact_prefix: desktop-canary
       artifact_retention_days: 7
+      build_macos: false
     secrets: inherit
 
   release:
@@ -96,31 +97,8 @@ jobs:
           pattern: desktop-canary-*
           merge-multiple: true
 
-      - name: Merge macOS auto-update manifests
-        uses: ./.github/actions/merge-mac-manifests
-        with:
-          artifact-prefix: desktop-canary
-          extra-manifest-names: canary-mac.yml
-
       - name: Create canary-named copies for updater URLs
-        run: |
-          cd release-artifacts
-          for file in *.AppImage; do
-            if [[ -f "$file" ]]; then
-              arch=$(echo "$file" | sed -E 's/.*-([^-]+)\.AppImage$/\1/')
-              cp "$file" "Superset-Canary-${arch}.AppImage"
-              echo "Created canary copy: Superset-Canary-${arch}.AppImage"
-            fi
-          done
-          # Prerelease builds may request canary-linux.yml; keep latest-linux.yml as fallback.
-          for file in *-linux.yml; do
-            if [[ -f "$file" && "$file" != "canary-linux.yml" && "$file" != "latest-linux.yml" ]]; then
-              cp "$file" "canary-linux.yml"
-              cp "$file" "latest-linux.yml"
-              echo "Created canary manifests: canary-linux.yml, latest-linux.yml from $file"
-              break
-            fi
-          done
+        run: bun scripts/release/stage-linux-artifacts.ts release-artifacts --canary
 
       - name: List artifacts
         run: |
@@ -132,15 +110,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Delete existing release if it exists
-          gh release delete desktop-canary --yes || true
+          gh release delete agent-workbench-canary --yes || true
           # Delete the tag
-          git push origin :refs/tags/desktop-canary || true
+          git push origin :refs/tags/agent-workbench-canary || true
 
       - name: Create Canary Release
         uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
         with:
-          tag_name: desktop-canary
-          name: "Superset Desktop Canary"
+          tag_name: agent-workbench-canary
+          name: "Agent Workbench Canary"
           body: |
             **Internal Testing Build**
 

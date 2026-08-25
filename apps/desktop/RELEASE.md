@@ -90,7 +90,8 @@ This creates a draft release. Publish it manually at GitHub Releases.
 The Linux app checks for updates at launch and every x hours using:
 
 - **Linux manifest**: `https://github.com/daryl-micah/superset-fork-linux/releases/latest/download/latest-linux.yml`
-- **Linux installer**: `https://github.com/daryl-micah/superset-fork-linux/releases/latest/download/Agent-Workbench-x64.AppImage`
+- **Recommended Debian installer**: `https://github.com/daryl-micah/superset-fork-linux/releases/latest/download/Agent-Workbench-amd64.deb`
+- **Portable AppImage**: `https://github.com/daryl-micah/superset-fork-linux/releases/latest/download/Agent-Workbench-x64.AppImage`
 
 The workflow creates stable-named copies (without version) so these URLs always point to the latest build.
 
@@ -118,8 +119,13 @@ Linux output should include:
 - `*.AppImage`
 - `*-linux.yml` (auto-update manifest)
 
+Before publishing, the workflow installs and launches both packages on Ubuntu
+24.04 and Debian 13, then verifies the renderer readiness marker. The staging
+step also rejects manifests that reference missing versioned artifacts.
+
 ## Troubleshooting
 
 - **Linux auto-update not working**: Verify `release/*-linux.yml` is uploaded to the GitHub release
 - **Build icon warnings/failures**: Add icons under `src/resources/build/icons/` (`icon.icns`, `icon.ico`, optional Linux `.png`)
 - **Native module errors**: Ensure `node-pty` is in externals in both `electron.vite.config.ts` and `electron-builder.ts`
+- **Canary updates not found**: Verify the `agent-workbench-canary` prerelease contains both `canary-linux.yml` and `latest-linux.yml`

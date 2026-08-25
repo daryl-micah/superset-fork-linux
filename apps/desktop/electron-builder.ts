@@ -16,7 +16,13 @@ import {
 
 const currentYear = new Date().getFullYear();
 const author = pkg.author?.name ?? pkg.author;
-const productName = pkg.productName;
+const displayName = pkg.productName;
+export function getProductName(
+	platform: NodeJS.Platform = process.platform,
+): string {
+	return platform === "linux" ? "agent-workbench" : displayName;
+}
+const productName = getProductName();
 const macIconPath = join(pkg.resources, "build/icons/icon.icns");
 const linuxIconPath = join(pkg.resources, "build/icons");
 const winIconPath = join(pkg.resources, "build/icons/icon.ico");
@@ -59,6 +65,12 @@ const config: Configuration = {
 	// Generate update manifests for all channels (latest.yml, canary.yml, etc.)
 	// This enables proper channel-based auto-updates following electron-builder conventions
 	generateUpdatesFilesForAllChannels: true,
+	// Use the static AppImage runtime so portable builds do not depend on FUSE 2.
+	// It also probes user namespace support before applying the narrow
+	// --no-sandbox fallback required by some Ubuntu AppArmor configurations.
+	toolsets: {
+		appimage: "1.0.3",
+	},
 
 	// Generate latest-mac.yml for auto-update (workflow handles actual upload)
 	publish: {
@@ -160,8 +172,8 @@ const config: Configuration = {
 			"build/entitlements.mac.inherit.plist",
 		),
 		extendInfo: {
-			CFBundleName: productName,
-			CFBundleDisplayName: productName,
+			CFBundleName: displayName,
+			CFBundleDisplayName: displayName,
 			// Required for macOS microphone permission prompt
 			NSMicrophoneUsageDescription:
 				"Agent Workbench needs microphone access so voice-enabled tools like Codex transcription can capture audio input.",
@@ -178,7 +190,7 @@ const config: Configuration = {
 
 	// Deep linking protocol
 	protocols: {
-		name: productName,
+		name: displayName,
 		schemes: ["agent-workbench"],
 	},
 
@@ -190,11 +202,30 @@ const config: Configuration = {
 		maintainer:
 			"Agent Workbench Contributors <daryl-micah@users.noreply.github.com>",
 		synopsis: pkg.description,
+		syncDesktopName: true,
+		desktop: {
+			entry: {
+				Name: displayName,
+			},
+		},
 		target: ["deb", "AppImage"],
 		artifactName: `agent-workbench-\${version}-\${arch}.\${ext}`,
 	},
 	deb: {
 		packageCategory: "utils",
+		appArmorProfile: join(pkg.resources, "build/apparmor-profile"),
+		depends: [
+			"libgtk-3-0",
+			"libnotify4",
+			"libnss3",
+			"libxss1",
+			"libxtst6",
+			"xdg-utils",
+			"libatspi2.0-0",
+			"libuuid1",
+			"libsecret-1-0",
+			"libasound2",
+		],
 	},
 
 	// Windows
@@ -206,7 +237,7 @@ const config: Configuration = {
 				arch: ["x64"],
 			},
 		],
-		artifactName: `${productName}-${pkg.version}-\${arch}.\${ext}`,
+		artifactName: `${displayName}-${pkg.version}-\${arch}.\${ext}`,
 	},
 
 	// NSIS installer (Windows)

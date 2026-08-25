@@ -12,27 +12,13 @@ import { authClient } from "renderer/lib/auth-client";
 import { electronTrpc } from "renderer/lib/electron-trpc";
 import { electronQueryClient } from "renderer/providers/ElectronTRPCProvider";
 import { OnboardingNavigation } from "./components/OnboardingNavigation";
+import { ONBOARDING_STEPS } from "./onboarding-steps";
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
 	component: OnboardingFlowLayout,
 });
 
 const rootRedirect = <Redirect to="/" replace />;
-
-const STEPS = [
-	{
-		path: "/onboarding",
-		match: (p: string) => p === "/onboarding",
-		title: "Setup Superset",
-		subtitle: "Connect your agents and tools to get started.",
-	},
-	{
-		path: "/onboarding/project",
-		match: (p: string) => p === "/onboarding/project",
-		title: "Create or add a project",
-		subtitle: "Start from scratch, open a folder, or clone a repo.",
-	},
-] as const;
 
 function OnboardingFlowLayout() {
 	const { data: session, isPending } = authClient.useSession();
@@ -47,14 +33,16 @@ function OnboardingFlowLayout() {
 		return rootRedirect;
 	}
 
-	const currentStepIdx = STEPS.findIndex((s) => s.match(location.pathname));
+	const currentStepIdx = ONBOARDING_STEPS.findIndex((step) =>
+		step.match(location.pathname),
+	);
 	const isOnMainStep = currentStepIdx >= 0;
 	const isFirstStep = currentStepIdx === 0;
-	const currentStep = isOnMainStep ? STEPS[currentStepIdx] : null;
+	const currentStep = isOnMainStep ? ONBOARDING_STEPS[currentStepIdx] : null;
 
 	const handleBack = () => {
 		if (currentStepIdx <= 0) return;
-		const target = STEPS[currentStepIdx - 1];
+		const target = ONBOARDING_STEPS[currentStepIdx - 1];
 		if (!target) return;
 		navigate({ to: target.path });
 	};
@@ -92,7 +80,7 @@ function OnboardingFlowLayout() {
 				{isOnMainStep && (
 					<OnboardingNavigation
 						currentStep={currentStepIdx}
-						totalSteps={STEPS.length}
+						totalSteps={ONBOARDING_STEPS.length}
 						onBack={isFirstStep ? null : handleBack}
 						onContinue={handleContinue}
 						continueLabel="Continue"

@@ -238,12 +238,15 @@ An iOS app is coming soon so you can check on your agents from your phone.
 
 Download the desktop app:
 
-- **macOS**: [Apple Silicon (.dmg)](https://github.com/superset-sh/superset/releases/latest/download/Superset-arm64.dmg) · [Intel (.dmg)](https://github.com/superset-sh/superset/releases/latest/download/Superset-x64.dmg)
-- **Linux**: [x64 AppImage](https://github.com/superset-sh/superset/releases/latest/download/Superset-x86_64.AppImage) (experimental; macOS is the primary target)
-- **Windows**: not yet available
-- [All builds](https://github.com/superset-sh/superset/releases/latest)
+- **Ubuntu/Debian x64 (recommended)**: [Debian package](https://github.com/daryl-micah/superset-fork-linux/releases/latest/download/Agent-Workbench-amd64.deb)
+- **Portable Linux x64**: [AppImage](https://github.com/daryl-micah/superset-fork-linux/releases/latest/download/Agent-Workbench-x64.AppImage)
+- [All Agent Workbench builds](https://github.com/daryl-micah/superset-fork-linux/releases/latest)
 
-All you need installed is [Git](https://git-scm.com/). [gh](https://cli.github.com/) is optional and unlocks the PR workflows; Superset offers to install it for you.
+Ubuntu 24.04+ and Debian 13 are the certified targets. See the
+[Linux support guide](docs/LINUX_SUPPORT.md) for installation, diagnostics, and
+issue-reporting details.
+
+All you need installed is [Git](https://git-scm.com/). [gh](https://cli.github.com/) is optional and unlocks the PR workflows; Agent Workbench offers to install it for you.
 
 ## Development
 
