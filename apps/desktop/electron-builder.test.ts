@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import config, {
 	CHROME_SANDBOX_MODE,
+	getProductName,
 	hardenLinuxSandbox,
 } from "./electron-builder";
 import pkg from "./package.json";
@@ -11,7 +12,8 @@ import pkg from "./package.json";
 describe("Agent Workbench packaging", () => {
 	test("uses an identity isolated from upstream Superset", () => {
 		expect(config.appId).toBe("dev.agentworkbench.desktop");
-		expect(config.productName).toBe("Agent Workbench");
+		expect(getProductName("linux")).toBe("agent-workbench");
+		expect(getProductName("darwin")).toBe("Agent Workbench");
 		expect(pkg.desktopName).toBe("agent-workbench");
 		expect(config.extraMetadata).toMatchObject({ name: "agent-workbench" });
 		expect(config.protocols).toEqual({
@@ -30,6 +32,7 @@ describe("Agent Workbench packaging", () => {
 		expect(config.linux).toMatchObject({
 			executableName: "agent-workbench",
 			syncDesktopName: true,
+			desktop: { entry: { Name: "Agent Workbench" } },
 			maintainer:
 				"Agent Workbench Contributors <daryl-micah@users.noreply.github.com>",
 			target: ["deb", "AppImage"],
@@ -38,6 +41,7 @@ describe("Agent Workbench packaging", () => {
 		expect(config.deb).toMatchObject({
 			packageCategory: "utils",
 			appArmorProfile: expect.stringContaining("build/apparmor-profile"),
+			depends: expect.arrayContaining(["libasound2"]),
 		});
 		expect(config.extraResources).toEqual(
 			expect.arrayContaining([

@@ -1,0 +1,19 @@
+name: Desktop Linux CI
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/build-desktop.yml"
+      - ".github/workflows/desktop-linux-ci.yml"
+      - "apps/desktop/**"
+      - "bun.lock"
+
+jobs:
+  build-linux:
+    uses: ./.github/workflows/build-desktop.yml
+    with:
+      channel: stable
+      build_macos: false
+      artifact_prefix: desktop-linux-ci
+      artifact_retention_days: 3
+    secrets: inherit

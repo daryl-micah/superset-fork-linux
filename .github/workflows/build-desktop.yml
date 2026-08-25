@@ -293,7 +293,9 @@ jobs:
           test "$(stat -c '%a' release/linux-unpacked/chrome-sandbox)" = "4755"
           test -f release/linux-unpacked/resources/LICENSE.md
           test -f release/linux-unpacked/resources/MODIFICATIONS.md
-          dpkg-deb --contents "$DEB_PATH" | grep -F './opt/Agent Workbench/resources/apparmor-profile'
+          dpkg-deb --contents "$DEB_PATH" | grep -F './opt/agent-workbench/agent-workbench'
+          dpkg-deb --contents "$DEB_PATH" | grep -F './opt/agent-workbench/resources/apparmor-profile'
+          dpkg-deb --field "$DEB_PATH" Depends | grep -F 'libasound2'
 
       - name: Smoke-test AppImage on Ubuntu
         working-directory: apps/desktop
@@ -316,6 +318,7 @@ jobs:
         working-directory: apps/desktop
         run: |
           docker run --rm \
+            --security-opt seccomp=unconfined \
             --volume "$PWD/release:/release:ro" \
             debian:13-slim \
             bash -euxo pipefail -c '
@@ -324,7 +327,7 @@ jobs:
               useradd --create-home smoke
               runuser -u smoke -- xvfb-run -a agent-workbench --smoke-test 2>&1 | tee /tmp/deb-smoke.log
               grep -F "[linux-smoke-test] renderer ready" /tmp/deb-smoke.log
-              runuser -u smoke -- xvfb-run -a /release/*.AppImage --smoke-test 2>&1 | tee /tmp/appimage-smoke.log
+              runuser -u smoke -- xvfb-run -a /release/*.AppImage --appimage-extract-and-run --smoke-test 2>&1 | tee /tmp/appimage-smoke.log
               grep -F "[linux-smoke-test] renderer ready" /tmp/appimage-smoke.log
             '
 
