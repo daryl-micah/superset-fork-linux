@@ -17,7 +17,9 @@ import {
 const currentYear = new Date().getFullYear();
 const author = pkg.author?.name ?? pkg.author;
 const displayName = pkg.productName;
-export function getProductName(platform: NodeJS.Platform = process.platform): string {
+export function getProductName(
+	platform: NodeJS.Platform = process.platform,
+): string {
 	return platform === "linux" ? "agent-workbench" : displayName;
 }
 const productName = getProductName();
