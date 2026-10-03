@@ -1,7 +1,7 @@
 abi <abi/4.0>,
 include <tunables/global>
 
-profile "agent-workbench" "/opt/agent-workbench/agent-workbench" flags=(unconfined) {
+profile "agent-workbench" "/opt/agent-workbench{,-canary}/agent-workbench" flags=(unconfined) {
   userns,
 
   # Site-specific additions and overrides. See local/README for details.
