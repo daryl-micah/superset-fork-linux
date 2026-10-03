@@ -293,8 +293,8 @@ jobs:
           test "$(stat -c '%a' release/linux-unpacked/chrome-sandbox)" = "4755"
           test -f release/linux-unpacked/resources/LICENSE.md
           test -f release/linux-unpacked/resources/MODIFICATIONS.md
-          dpkg-deb --contents "$DEB_PATH" | grep -F './opt/agent-workbench/agent-workbench'
-          dpkg-deb --contents "$DEB_PATH" | grep -F './opt/agent-workbench/resources/apparmor-profile'
+          dpkg-deb --contents "$DEB_PATH" | grep -E '\./opt/[^/]+/agent-workbench$'
+          dpkg-deb --contents "$DEB_PATH" | grep -E '\./opt/[^/]+/resources/apparmor-profile$'
           dpkg-deb --field "$DEB_PATH" Depends | grep -F 'libasound2'
 
       - name: Smoke-test AppImage on Ubuntu
