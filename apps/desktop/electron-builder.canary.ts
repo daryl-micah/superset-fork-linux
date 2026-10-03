@@ -13,7 +13,10 @@ import type { Configuration } from "electron-builder";
 import baseConfig from "./electron-builder";
 import pkg from "./package.json";
 
-const productName = "Agent Workbench Canary";
+const displayName = "Agent Workbench Canary";
+// Linux installs to /opt/<productName>; keep it space-free like stable.
+const productName =
+	process.platform === "linux" ? "agent-workbench-canary" : displayName;
 const canaryMacIconPath = join(pkg.resources, "build/icons/icon-canary.icns");
 const canaryLinuxIconPath = join(pkg.resources, "build/icons/icon-canary.png");
 const canaryWinIconPath = join(pkg.resources, "build/icons/icon-canary.ico");
@@ -36,14 +39,15 @@ const config: Configuration = {
 		artifactName: `Agent-Workbench-Canary-\${version}-\${arch}.\${ext}`,
 		extendInfo: {
 			...baseConfig.mac?.extendInfo,
-			CFBundleName: productName,
-			CFBundleDisplayName: productName,
+			CFBundleName: displayName,
+			CFBundleDisplayName: displayName,
 		},
 	},
 
 	linux: {
 		...baseConfig.linux,
 		...(existsSync(canaryLinuxIconPath) ? { icon: canaryLinuxIconPath } : {}),
+		desktop: { entry: { Name: displayName } },
 		synopsis: `${pkg.description} (Canary)`,
 		artifactName: `agent-workbench-canary-\${version}-\${arch}.\${ext}`,
 	},
